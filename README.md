@@ -38,6 +38,21 @@ $env:PORT = "5200"
 
 The launcher starts/checks the server on that port and opens http://127.0.0.1:5200/. Night mode is at http://127.0.0.1:5200/night/. You can also run `npm start` instead of the launcher after setting the same variable, then open the matching URL yourself. Use a whole-number port from 1 to 65535; if another app uses it, choose a different port. To return to the default in that PowerShell session, run `$env:PORT = $null`. This local port setting does not change the GitHub Pages URLs.
 
+### Optional automated check
+
+`npm run verify` is the browser check behind the verification notes above: it walks the day route, switches to the night route in the same tab, checks audio shutdown, the pause keyboard trap, demo playback and phone-width layout, then writes reports to `artifacts/<run-id>/`. You do not need it to run the site, and `npm ci` does not install what it needs.
+
+Prerequisites: Google Chrome (the script launches `channel: 'chrome'`) and Playwright plus pngjs, with the local server already running at http://127.0.0.1:5190.
+
+```sh
+npm install --no-save playwright pngjs
+npm start
+# in a second terminal, once the server is ready
+npm run verify
+```
+
+The base URL and run id are optional arguments: `node tools/verify-campus.mjs http://127.0.0.1:5200 my-run`. Without Playwright the script stops with one instruction line instead of a module error.
+
 The original development checkout uses a junction to local Three.js/Vite dependencies; do not delete that node_modules junction recursively. Fresh checkouts create their own dependencies with `npm ci`.
 
 The Git repository includes `tour/`, `night/`, `shared/`, source assets, build/server tools and written evidence. Generated `dist/` and `release/`, dependencies, local `Old/` snapshots, screenshots, recordings and raw QA results are excluded. Evidence documents describe historical runs; their local capture paths are not included in this source repository.
