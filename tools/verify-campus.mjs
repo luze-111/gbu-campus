@@ -3,7 +3,12 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {inspectPage} from './inspect-canvas.mjs';
-const {chromium}=createRequire(import.meta.url)('playwright');
+const require=createRequire(import.meta.url);
+let chromium;
+try{({chromium}=require('playwright'));}catch{
+  console.error('This optional check needs Playwright and Google Chrome, which npm ci does not install. In the repository root run: npm install --no-save playwright. Start the local server first (npm start), then run npm run verify again. Nothing was changed.');
+  process.exit(1);
+}
 const base=(process.argv[2]||'http://127.0.0.1:5190').replace(/\/$/,''),runId=process.argv[3]||'integration-1',out=path.resolve('artifacts',runId);
 await mkdir(out,{recursive:true});
 const pairs=['desktop','mobile'].flatMap(mode=>['welcome','plaza','title','active-play'].map(state=>({mode,state})));
